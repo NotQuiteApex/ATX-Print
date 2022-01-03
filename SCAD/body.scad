@@ -21,12 +21,12 @@ module atxBoard() {
     difference() {
         // Base board
         difference() {
-            cube([300, 4, 375]);
+            cube([300, 6, 375]);
             
-            translate([-1, -1, 0]) cube([3.1, 6, 155]);
+            translate([-1, -1, 0]) cube([3.1, 8, 155]);
         }
         
-        translate([0.1, 5, 0.1]) atxCylinders(size=3, depth=6);
+        translate([0.1, 6, 0.1]) atxCylinders(size=3, depth=8);
     }
 }
 
@@ -46,15 +46,28 @@ module bodyFront() {
     cube([10, 172, 375]);
 }
 
-translate([1,1,1]) {
+module Body() {
     // Sides of the case
     translate([10, 0, 375+10]) bodyTop();
     translate([10, 0, 0]) bodyBottom();
     translate([0, 0, 0+10]) bodyBack();
     translate([300+10, 0, 0+10]) bodyFront();
     
-    // Corners of the case
+    // Edges of the case
+    translate([0,      0,      0]) cube([10, 172+6, 10]);
+    translate([0,      0, 375+10]) cube([10, 172+6, 10]);
+    translate([300+10, 0,      0]) cube([10, 172+6, 10]);
+    translate([300+10, 0, 375+10]) cube([10, 172+6, 10]);
+    
+    translate([10, 172,      0]) cube([300, 6, 10]);
+    translate([10, 172, 375+10]) cube([300, 6, 10]);
+    translate([0, 172, 10]) cube([10, 6, 375]);
+    translate([300+10, 172, 10]) cube([10, 6, 375]);
     
     // Part with the motherboard
     translate([10, 172, 0+10]) atxBoard();
+}
+
+translate([1,1,1]) {
+    Body();
 }
