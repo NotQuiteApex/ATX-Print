@@ -1,6 +1,8 @@
 // Body of ATX Cas
 // Units in mm unless otherwise stated
 
+$fn = 10;
+
 atxMountHoles = [ // in inches
     [0.9, 11.1], [6.1, 11.1], [8.95, 11.1], [11.8, 11.1],
     [0.0,  4.9], [6.1,  4.9], [8.95,  4.9], [11.8, 4.9],
@@ -17,16 +19,16 @@ module atxCylinders(size=3, depth=4) {
     }
 }
 
-module atxBoard(insL=375, insW=300, atxbT=6) {
+module atxBoard(insL=375, insW=300, atxBT=6, atxSD=5) {
     difference() {
         // Base board
         difference() {
-            cube([insW, atxbT, insL]);
+            cube([insW, atxBT, insL]);
             
-            translate([-1, -1, 0]) cube([3, atxbT+2, 155]);
+            translate([-1, -1, 0]) cube([3, atxBT+2, 155]);
         }
         
-        translate([0.1, atxbT+1, 0.1]) atxCylinders(size=3, depth=atxbT+2);
+        translate([0.1, atxBT+1, 0.1]) atxCylinders(size=atxSD, depth=atxBT+2);
     }
 }
 
@@ -51,7 +53,9 @@ module Body() {
     insW = 300; // inside volume width
     insD = 175; // inside volume depth
     bodyT = 10; // body side thickness
-    atxbT = 6;  // atx board side thickness
+    atxBT = 6;  // atx board side thickness
+    atxSO = 6;  // atx stand off height
+    atxSD = 4.5;  // atx stand off diameter
     
     // Sides of the case
     translate([     bodyT, 0, insL+bodyT]) bodyTop(insW, insD, bodyT);
@@ -60,18 +64,18 @@ module Body() {
     translate([insW+bodyT, 0,      bodyT]) bodyFront(bodyT, insD, insL);
     
     // Edges of the case
-    translate([0,          0,          0]) cube([bodyT, insD+atxbT, bodyT]);
-    translate([0,          0, insL+bodyT]) cube([bodyT, insD+atxbT, bodyT]);
-    translate([insW+bodyT, 0,          0]) cube([bodyT, insD+atxbT, bodyT]);
-    translate([insW+bodyT, 0, insL+bodyT]) cube([bodyT, insD+atxbT, bodyT]);
+    translate([0,          0,          0]) cube([bodyT, insD+atxBT, bodyT]);
+    translate([0,          0, insL+bodyT]) cube([bodyT, insD+atxBT, bodyT]);
+    translate([insW+bodyT, 0,          0]) cube([bodyT, insD+atxBT, bodyT]);
+    translate([insW+bodyT, 0, insL+bodyT]) cube([bodyT, insD+atxBT, bodyT]);
     
-    translate([     bodyT, insD,          0]) cube([insW, atxbT, bodyT]);
-    translate([     bodyT, insD, insL+bodyT]) cube([insW, atxbT, bodyT]);
-    translate([         0, insD,      bodyT]) cube([bodyT, atxbT, insL]);
-    translate([insW+bodyT, insD,      bodyT]) cube([bodyT, atxbT, insL]);
+    translate([     bodyT, insD,          0]) cube([insW, atxBT, bodyT]);
+    translate([     bodyT, insD, insL+bodyT]) cube([insW, atxBT, bodyT]);
+    translate([         0, insD,      bodyT]) cube([bodyT, atxBT, insL]);
+    translate([insW+bodyT, insD,      bodyT]) cube([bodyT, atxBT, insL]);
     
     // Part with the motherboard
-    translate([bodyT, insD, bodyT]) atxBoard(insL, insW, atxbT);
+    translate([bodyT, insD, bodyT]) atxBoard(insL, insW, atxBT, atxSD);
 }
 
 translate([1,1,1]) {
