@@ -1,7 +1,7 @@
 // Body of ATX Cas
 // Units in mm unless otherwise stated
 
-$fn = 10;
+$fn = 20;
 
 atxMountHoles = [ // in inches
     [0.9, 11.1], [6.1, 11.1], [8.95, 11.1], [11.8, 11.1],
@@ -48,14 +48,30 @@ module bodyFront(bodyT=10, insD=172, insL=375) {
     cube([bodyT, insD, insL]);
 }
 
+module handleNotch(length=18, outer=30, inner=15) {
+    difference() {
+        union() {
+            translate([0, 0, outer/2]) rotate([-90]) cylinder(length, outer/2, outer/2);
+            difference() {
+                translate([-outer, 0, 0]) cube([outer*2, length, outer/2]);
+                union() {
+                    translate([ outer, -1, outer/2]) rotate([-90]) cylinder(length+2, outer/2, outer/2);
+                    translate([-outer, -1, outer/2]) rotate([-90]) cylinder(length+2, outer/2, outer/2);
+                }
+            }
+        }
+        translate([0, -1, outer/2]) rotate([-90]) cylinder(length+2, inner/2, inner/2);
+    }
+}
+
 module Body() {
     insL = 375; // inside volume length/height
     insW = 300; // inside volume width
     insD = 175; // inside volume depth
     bodyT = 10; // body side thickness
-    atxBT = 6;  // atx board side thickness
+    atxBT = 4;  // atx board side thickness
     atxSO = 6;  // atx stand off height
-    atxSD = 4.5;  // atx stand off diameter
+    atxSD = 5;  // atx stand off diameter
     
     // Sides of the case
     translate([     bodyT, 0, insL+bodyT]) bodyTop(insW, insD, bodyT);
@@ -76,6 +92,10 @@ module Body() {
     
     // Part with the motherboard
     translate([bodyT, insD, bodyT]) atxBoard(insL, insW, atxBT, atxSD);
+
+    // Handle notches
+    translate([             0, (insD+atxBT)/2, (insL+bodyT*2)]) rotate([0,0, -90]) handleNotch();
+    translate([(insW+bodyT*2), (insD+atxBT)/2, (insL+bodyT*2)]) rotate([0,0,  90]) handleNotch();
 }
 
 translate([1,1,1]) {
