@@ -1,6 +1,8 @@
 // Body of ATX Cas
 // Units in mm unless otherwise stated
 
+use <__helpers__.scad>;
+
 $fn = 20;
 
 atxMountHoles = [ // in inches
@@ -33,7 +35,42 @@ module atxBoard(insL=375, insW=300, atxBT=6, atxSD=5) {
 }
 
 module bodyTop(insW=300, insD=172, bodyT=10) {
-    cube([insW, insD, bodyT]);
+    difference() {
+        cube([insW, insD, bodyT]);
+        translate([insW/2, insD/2, bodyT/2]) cube([240, 120, bodyT+2], center=true);
+    }
+    
+    difference() {
+        union() {
+            // lines for support
+            translate([insW/2, insD/2, bodyT*3/4]) cube([10, 120, bodyT/2], center=true);
+            //translate([insW/2, insD/2, bodyT*3/4]) cube([240, 10, bodyT/2], center=true);
+            
+            // triangle bits for mounting
+            trisize = 25;
+            translate([insW/2-120, insD/2+60-trisize, bodyT]) scale([ 1,  1, 1]) rotate([0, 90, 0]) prism(bodyT/2, trisize,trisize);
+            translate([insW/2-120, insD/2-60+trisize, bodyT]) scale([ 1, -1, 1]) rotate([0, 90, 0]) prism(bodyT/2, trisize,trisize);
+            translate([insW/2,     insD/2+60-trisize, bodyT]) scale([-1,  1, 1]) rotate([0, 90, 0]) prism(bodyT/2, trisize,trisize);
+            translate([insW/2,     insD/2-60+trisize, bodyT]) scale([-1, -1, 1]) rotate([0, 90, 0]) prism(bodyT/2, trisize,trisize);
+            
+            translate([insW/2+120, insD/2+60-trisize, bodyT]) scale([-1,  1, 1]) rotate([0, 90, 0]) prism(bodyT/2, trisize,trisize);
+            translate([insW/2+120, insD/2-60+trisize, bodyT]) scale([-1, -1, 1]) rotate([0, 90, 0]) prism(bodyT/2, trisize,trisize);
+            translate([insW/2,     insD/2+60-trisize, bodyT]) scale([ 1,  1, 1]) rotate([0, 90, 0]) prism(bodyT/2, trisize,trisize);
+            translate([insW/2,     insD/2-60+trisize, bodyT]) scale([ 1, -1, 1]) rotate([0, 90, 0]) prism(bodyT/2, trisize,trisize);
+        }
+        
+        union() {
+            translate([insW/2+7.5,     insD/2+60-7.5, bodyT*3/4]) cylinder(bodyT/2+1, 2.5, 2.5, center=true);
+            translate([insW/2+7.5,     insD/2-60+7.5, bodyT*3/4]) cylinder(bodyT/2+1, 2.5, 2.5, center=true);
+            translate([insW/2+120-7.5, insD/2+60-7.5, bodyT*3/4]) cylinder(bodyT/2+1, 2.5, 2.5, center=true);
+            translate([insW/2+120-7.5, insD/2-60+7.5, bodyT*3/4]) cylinder(bodyT/2+1, 2.5, 2.5, center=true);
+            translate([insW/2-7.5,     insD/2+60-7.5, bodyT*3/4]) cylinder(bodyT/2+1, 2.5, 2.5, center=true);
+            translate([insW/2-7.5,     insD/2-60+7.5, bodyT*3/4]) cylinder(bodyT/2+1, 2.5, 2.5, center=true);
+            translate([insW/2-120+7.5, insD/2+60-7.5, bodyT*3/4]) cylinder(bodyT/2+1, 2.5, 2.5, center=true);
+            translate([insW/2-120+7.5, insD/2-60+7.5, bodyT*3/4]) cylinder(bodyT/2+1, 2.5, 2.5, center=true);
+            
+        }
+    }
 }
 
 module bodyBottom(insW=300, insD=172, bodyT=10) {
